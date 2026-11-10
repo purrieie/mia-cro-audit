@@ -1,0 +1,551 @@
+<title>Mia Shopper View</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0A0C;--surface:#121216;--line:#26262E;--text:#F2F1F5;--muted:#9A98A6;--purple:#8B6BF7;--purple-soft:rgba(139,107,247,0.14);--lilac:#B49CFB;--amber:#D9A441;--green:#34D399;--red:#F87171;--bench:#4A4752;
+--sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'DM Mono',ui-monospace,Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+p{color:var(--muted);max-width:72ch;margin:0 0 12px}
+h1{font-size:clamp(32px,5.6vw,54px);line-height:1.06;font-weight:700;letter-spacing:-.02em;margin:14px 0 16px;text-wrap:balance}
+h1 em{font-style:normal;background:linear-gradient(120deg,var(--lilac),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:clamp(24px,3.2vw,32px);line-height:1.18;font-weight:700;letter-spacing:-.015em;margin:0 0 12px;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin:0}
+.lead{color:var(--text);font-size:18px}
+
+/* top bar */
+.topbar{background:rgba(10,10,12,.94);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(6px)}
+.tb{display:flex;align-items:center;gap:14px;padding-block:14px}
+.brandmark{font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.brandmark.t{color:var(--purple)}
+.tb-x{font-family:var(--mono);color:var(--muted);font-size:13px}
+.tb-div{width:1px;height:22px;background:var(--line)}
+.tb-title{display:flex;align-items:baseline;gap:12px;min-width:0}
+.tb-title b{font-weight:600;font-size:14px;white-space:nowrap}
+.tb-sub{color:var(--muted);font-size:13px;white-space:nowrap}
+.tb-date{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.rnav{border-top:1px solid var(--line)}
+.rnav-in{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:8px}
+.rnav-items{display:flex;gap:4px;overflow-x:auto;min-width:0}
+.rnav-items a{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);text-decoration:none;padding:4px 12px 4px 5px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.rnav-items a i{font-style:normal;font-family:var(--mono);font-size:10.5px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.rnav-items a.done{color:var(--text)}.rnav-items a.done i{background:var(--purple);border-color:var(--purple);color:#fff}
+.rnav-items a.cur{color:var(--text);border-color:rgba(139,107,247,.55);background:var(--purple-soft)}.rnav-items a.cur i{border-color:var(--purple);color:var(--purple)}
+.rnav-meta{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}.rnav-meta b{color:var(--text)}
+.rnav-bar{height:3px;background:rgba(255,255,255,.06)}.rnav-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--lilac))}
+@media (max-width:760px){.tb-sub,.tb-date{display:none}.rnav-items a span{display:none}.rnav-items a.cur span{display:inline}.rnav-meta span{display:none}}
+@media (max-width:520px){.tb-div,.tb-title{display:none}}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:122px}
+
+header.hd{padding:60px 0 44px;border-bottom:1px solid var(--line)}
+section.s{padding:54px 0;border-bottom:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:96px minmax(0,1fr);gap:20px;align-items:start;margin-bottom:26px}
+.sec-num{font-family:var(--mono);font-size:40px;color:var(--purple);line-height:1;font-weight:500}
+@media (max-width:640px){.sec-head{grid-template-columns:1fr;gap:6px}.sec-num{font-size:30px}}
+h4.grp{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin:30px 0 12px;font-weight:500}
+h4.grp:first-child{margin-top:4px}
+
+/* kcards */
+.kstack{display:flex;flex-direction:column;gap:12px}
+.kcard{display:grid;grid-template-columns:minmax(150px,17%) minmax(0,1fr);gap:22px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 22px}
+.kcard.hi{border-color:var(--purple);background:linear-gradient(135deg,rgba(139,107,247,.14),rgba(139,107,247,.03))}
+.kn{font-weight:700;font-size:17px}
+.ks{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.6}
+.kcells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.kc{border-left:1px solid var(--line);padding-left:12px;min-width:0}
+.kcl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;line-height:1.4}
+.kcv{font-family:var(--mono);font-size:13px;font-weight:500;margin-bottom:7px}
+.kcv i{font-style:normal;color:var(--muted)}
+.kcs{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px}
+.chip{font-family:var(--mono);font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(154,152,166,.18);color:var(--muted);white-space:nowrap}
+.chip.up{background:rgba(52,211,153,.16);color:var(--green)}.chip.down{background:rgba(248,113,113,.16);color:var(--red)}.chip.amb{background:rgba(217,164,65,.14);color:var(--amber)}
+.knote{grid-column:1/-1;background:rgba(217,164,65,.12);border:1px solid rgba(217,164,65,.4);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--amber);line-height:1.65}
+.knote b{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-right:10px}
+@media (max-width:900px){.kcard{grid-template-columns:1fr}.kcells{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.hlgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hl{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;min-width:0}
+.hl-big{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1.1}
+.hl.up .hl-big{color:var(--green)}.hl.down .hl-big{color:var(--red)}.hl.watch .hl-big{color:var(--amber)}.hl.pur .hl-big{color:var(--lilac)}
+.hl.watch{border-color:rgba(217,164,65,.4);background:rgba(217,164,65,.06)}
+.hl-lab{font-weight:700;font-size:15px;margin:10px 0 6px}
+.hl-txt{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media (max-width:900px){.hlgrid{grid-template-columns:1fr 1fr}}@media (max-width:600px){.hlgrid{grid-template-columns:1fr}}
+
+.notepill{margin-top:14px;background:rgba(217,164,65,.12);border:1px solid rgba(217,164,65,.4);border-radius:8px;padding:9px 16px;font-size:13px;color:var(--amber);line-height:1.7}
+.notepill .sep{color:rgba(217,164,65,.5);margin:0 6px}
+
+/* tables */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 6px}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:620px}
+th,td{padding:12px 15px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:none}
+td{color:var(--muted)}
+td.k{color:var(--text);font-weight:500}
+td .sub{display:block;font-size:12px;color:var(--muted);margin-top:4px;font-weight:400}
+.wtab td{line-height:1.65;padding:16px 18px}
+.wtab td.wk{width:27%}.wtab td.wk b{display:block;color:var(--text);font-size:15px;margin-bottom:6px}.wtab td.wk span{display:block;font-size:12.5px}
+.wtab td.wm{color:var(--text);width:36%}
+.wbig{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1.1}
+.wbig.up{color:var(--green)}.wbig.down{color:var(--red)}.wbig.flat{color:var(--amber)}.wbig.pur{color:var(--lilac)}
+.wcap{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.wba{font-family:var(--mono);font-size:14px;color:var(--text)}
+td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+.tldr{font-size:16.5px;line-height:1.75;font-weight:500;color:var(--text);padding:2px 0 2px 20px;border-left:3px solid var(--purple);margin-top:22px;max-width:800px}
+.tldr p{color:var(--text);margin:0}
+
+/* buyer journey */
+.bj{background:linear-gradient(180deg,rgba(139,107,247,.08),rgba(139,107,247,0) 45%);border:1px solid var(--line);border-radius:14px;padding:28px 26px 22px}
+.bj-top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start}
+.bj-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--purple);margin-bottom:10px}
+.bj-title{font-size:32px;font-weight:700;line-height:1.1}.bj-title em{font-style:normal;color:var(--lilac)}
+.bj-sub{font-size:14.5px;color:var(--muted);max-width:640px;margin-top:12px;line-height:1.65}.bj-sub b{color:var(--text)}
+.bj-legend{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:9px;white-space:nowrap;padding-top:6px}
+.bj-legend span{display:flex;align-items:center;gap:9px}.bj-legend i{width:11px;height:11px;border-radius:3px}
+.bj-arrow{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);margin:24px 0 14px}
+.bj-arrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--purple),rgba(139,107,247,.15))}
+.bj-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.bjc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 12px;display:flex;flex-direction:column;min-width:0}
+.bjc.gap{border-color:rgba(248,113,113,.45)}
+.bjh{display:flex;justify-content:space-between;align-items:center;min-height:24px;gap:6px}
+.bjnum{font-family:var(--mono);font-size:18px;color:var(--purple)}
+.bjbadge{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(217,164,65,.5);color:var(--amber);background:rgba(217,164,65,.1);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.bjbadge.red{border-color:rgba(248,113,113,.5);color:var(--red);background:rgba(248,113,113,.1)}
+.bjbadge.grn{border-color:rgba(52,211,153,.5);color:var(--green);background:rgba(52,211,153,.1)}
+.bjt{font-weight:700;font-size:15px;line-height:1.25;margin-top:8px;min-height:38px}
+.bjq{font-style:italic;font-size:12px;color:var(--muted);line-height:1.45;min-height:34px;margin-top:4px}
+.bjb{display:flex;justify-content:center;align-items:flex-end;gap:8px;height:170px;border-bottom:1px solid var(--line);margin-top:6px}
+.bjb .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:42%}
+.bjv{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:4px}.bjv.b{color:var(--lilac);font-weight:700;font-size:13.5px}
+.bar{width:100%;border-radius:4px 4px 0 0}.bar.nb{background:var(--bench)}.bar.b{background:var(--purple)}
+.bjstat{height:170px;border-bottom:1px solid var(--line);margin-top:6px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.bjstat div{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--lilac);line-height:1}
+.bjstat span{display:block;font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted);margin-top:4px}
+.bjm{font-size:12.5px;font-weight:600;margin-top:10px;line-height:1.35;min-height:34px}
+.bjchip{align-self:flex-start;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:#6E4FE0;border-radius:999px;padding:3px 10px;margin-top:6px}
+.bjchip.red{background:rgba(248,113,113,.2);color:var(--red)}.bjchip.grn{background:rgba(52,211,153,.18);color:var(--green)}
+.bjnote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
+.bj-sowhat{border-left:3px solid var(--purple);padding:2px 0 2px 16px;margin-top:22px}
+.bj-sowhat b{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--purple);font-weight:500}
+.bj-sowhat p{font-size:16px;color:var(--text);margin:6px 0 0;max-width:none;line-height:1.55}
+.bj-foot{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.7;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}.bj-foot b{color:var(--amber);font-weight:500}
+@media (max-width:1000px){.bj-cards{grid-template-columns:repeat(3,minmax(0,1fr))}.bj-top{flex-direction:column}.bj-title{font-size:26px}}
+@media (max-width:600px){.bj-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.bj{padding:20px 14px}}
+
+/* fix tables */
+.etab td.wk{width:22%}.etab td.pw2{width:12%}.etab td.sg{width:14%}.etab td.vcell{width:28%}.etab td.wm{width:24%}
+.stp{font-size:12px;color:var(--text);line-height:1.35;display:flex;gap:7px;align-items:flex-start;margin-bottom:7px}
+.stp i{font-style:normal;font-family:var(--mono);font-size:10.5px;flex:none;width:18px;height:18px;border-radius:50%;background:var(--purple-soft);color:var(--purple);display:flex;align-items:center;justify-content:center;border:1px solid rgba(139,107,247,.4)}
+.vr{display:flex;gap:10px;align-items:baseline;margin-bottom:9px;font-size:13.5px;line-height:1.55;color:var(--text)}.vr:last-child{margin-bottom:0}
+.vt{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:rgba(139,107,247,.18);color:var(--purple);white-space:nowrap}
+.vt.ctl{background:rgba(154,152,166,.18);color:var(--muted)}
+.pnum{font-style:normal;font-family:var(--mono);color:var(--purple);margin-right:10px}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;margin-top:8px;white-space:nowrap}
+.tag.cro{background:rgba(139,107,247,.18);color:var(--purple)}.tag.gro{background:rgba(52,211,153,.14);color:var(--green)}.tag.held{background:rgba(217,164,65,.14);color:var(--amber)}
+.intro{font-size:14px;color:var(--muted);margin-bottom:12px}
+
+/* rollout */
+.mon td.k{white-space:nowrap}
+.fixes{display:flex;flex-wrap:wrap;gap:6px}
+.fixes span{font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--text)}
+.ph{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-left:8px}
+.ph.qw{background:rgba(52,211,153,.14);color:var(--green)}.ph.bb{background:rgba(139,107,247,.18);color:var(--purple)}.ph.rf{background:rgba(217,164,65,.14);color:var(--amber)}
+
+/* detail */
+details.bigdetail{border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+details.bigdetail>summary{cursor:pointer;list-style:none;padding:22px 26px;display:flex;align-items:center;gap:16px;font-size:20px;font-weight:700}
+details.bigdetail>summary::-webkit-details-marker{display:none}
+details.bigdetail>summary span{flex:1}
+details.bigdetail>summary em{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);font-weight:500}
+details.bigdetail>summary::after{content:"+";font-family:var(--mono);color:var(--purple);font-size:24px;line-height:1}
+details.bigdetail[open]>summary::after{content:"\2212"}
+.detailbody{padding:0 26px 28px;border-top:1px solid var(--line)}
+.detailbody section{padding:40px 0 10px;border-bottom:1px solid var(--line)}
+.detailbody section:last-child{border-bottom:none}
+@media (max-width:600px){.detailbody{padding:0 14px 20px}details.bigdetail>summary{padding:18px 16px;font-size:17px}}
+
+.grid table{min-width:880px}
+.grid th,.grid td{padding:8px 6px;text-align:center;font-size:12px}
+.grid th{font-size:10px;letter-spacing:.04em}
+.grid td.k{text-align:left;white-space:nowrap;font-size:13px}
+.grid tr.mia td{background:rgba(139,107,247,.07)}
+.cell{width:30px;height:30px;border-radius:7px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-family:var(--mono);font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.cell.s{color:var(--green)}.cell.w{color:var(--amber)}.cell.a{color:var(--red)}.cell.u{color:var(--muted)}
+.cell.nar{box-shadow:inset 0 -2px 0 var(--amber)}
+.cell:hover,.cell:focus-visible{border-color:var(--purple);outline:none}
+.cell.on{border-color:var(--purple);background:var(--purple-soft)}
+.cellpanel{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:8px;padding:14px 18px;margin-top:12px;font-size:14px;color:var(--text);min-height:64px}
+.cellpanel b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);font-weight:500;margin-bottom:6px}
+.cellpanel .opp{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+.cellpanel .opp b{color:var(--lilac)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 0 12px}
+.legend span{display:flex;align-items:center;gap:6px}
+
+.status td.k b{display:block}
+.tick{font-family:var(--mono);font-size:12px}
+.tick.ok{color:var(--green)}.tick.no{color:var(--amber)}
+
+footer{padding:40px 0 60px}
+footer p{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.9;max-width:none}
+</style>
+<style>
+.fun{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.fun .bjc{padding:12px 10px}
+.fun .bjt{min-height:36px;font-size:13.5px}
+.fstat{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--lilac);margin-top:10px;line-height:1}
+.fstat small{display:block;font-family:var(--sans);font-size:11.5px;font-weight:400;color:var(--muted);margin-top:5px}
+.fbar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);margin-top:12px;overflow:hidden}.fbar i{display:block;height:100%;background:var(--purple)}
+.bjc.gap .fbar i{background:var(--red)}
+@media (max-width:1000px){.fun{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:600px){.fun{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.risk{display:block;margin-top:8px;padding:7px 10px;border-radius:6px;background:rgba(217,164,65,.08);border:1px solid rgba(217,164,65,.3);color:var(--amber);font-size:12.5px;line-height:1.55}
+.risk b{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+.cat{display:block;margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.cat b{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-right:6px}
+.btab td{line-height:1.6;padding:15px 16px}
+.btab td.bk{width:22%}.btab td.bk b{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
+.btab td.be{width:30%}.btab td.bf{width:48%;color:var(--text)}
+.src{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.7;margin-top:10px}
+.shot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.shot{grid-template-columns:1fr}}
+.obs{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
+.obs h5{margin:0 0 8px;font-size:14px}
+.obs ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px;line-height:1.7}
+.obs .who{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.minitab table{min-width:480px}
+.minitab td,.minitab th{padding:9px 12px;font-size:13px}
+</style>
+<style>
+.persona{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.pc h3{margin:0;font-size:18px}
+.pc .pn{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--lilac);line-height:1}
+.pc .pn small{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400;display:block;margin-top:4px}
+.pc dl{margin:0;display:grid;gap:8px}
+.pc dt{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--purple)}
+.pc dd{margin:2px 0 0;font-size:13.5px;color:var(--muted);line-height:1.6}
+.pc dd b{color:var(--text);font-weight:500}
+.pc.gap{border-color:rgba(248,113,113,.45)}
+.lab{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;padding:1px 6px;border-radius:4px;margin-right:5px;vertical-align:1px}
+.lab.o{background:rgba(52,211,153,.14);color:var(--green)}.lab.i{background:rgba(217,164,65,.14);color:var(--amber)}.lab.m{background:rgba(248,113,113,.14);color:var(--red)}
+.cg table{min-width:900px}
+.cg th,.cg td{padding:9px 10px;font-size:12.5px;vertical-align:top}
+.cg td.k{white-space:nowrap}
+.cg tr.mia td{background:rgba(139,107,247,.07)}
+.mk{font-family:var(--mono);font-size:15px;margin-right:4px}.mk.s{color:var(--green)}.mk.w{color:var(--amber)}.mk.a{color:var(--red)}
+.cg td span.n{display:block;font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:2px}
+.otab td{padding:14px 14px;font-size:13px;line-height:1.55}
+.otab td.on{width:4%;font-family:var(--mono);color:var(--purple)}
+.otab td.ot{width:20%}.otab td.ot b{display:block;color:var(--text);font-size:14px;margin-bottom:4px}
+.otab td.oe{width:26%}.otab td.oc{width:26%;color:var(--text)}.otab td.om{width:24%}
+.ice{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ice span{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.ice span.h{color:var(--green);border-color:rgba(52,211,153,.4)}.ice span.md{color:var(--amber);border-color:rgba(217,164,65,.4)}
+.brief{display:grid;grid-template-columns:repeat(auto-fit,minmax(460px,1fr));gap:12px}
+@media (max-width:560px){.brief{grid-template-columns:1fr}}
+.tb2{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.tb2 h3{margin:0 0 4px;font-size:16px}.tb2 .tid{font-family:var(--mono);font-size:11px;color:var(--purple);letter-spacing:.08em}
+.tb2 .hyp{font-size:13.5px;color:var(--text);line-height:1.6;border-left:3px solid var(--purple);padding-left:12px;margin:10px 0}
+.tb2 dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 12px;margin:0;font-size:12.5px}
+.tb2 dt{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.tb2 dd{margin:0;color:var(--muted);line-height:1.55}.tb2 dd b{color:var(--text);font-weight:500}
+.sum3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:800px){.sum3{grid-template-columns:1fr}}
+.ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px;line-height:1.75}.ol b{color:var(--text)}
+.mat td{text-align:center}.mat td.k{text-align:left}
+</style>
+
+<div class="topbar"><div class="wrap tb">
+  <span class="brandmark t">Troopod</span><span class="tb-x">&times;</span><span class="brandmark">Mia by Tanishq</span>
+  <span class="tb-div"></span>
+  <div class="tb-title"><b>Bag, checkout and homepage, from the shopper's side</b><span class="tb-sub">Deep dive, version 2</span></div>
+  <div class="tb-date">October 2026</div>
+</div>
+<nav class="rnav" aria-label="Report sections"><div class="wrap rnav-in"><div class="rnav-items" id="rnavItems">
+  <a href="#s1"><i>1</i><span>Summary</span></a><a href="#s2"><i>2</i><span>Shoppers</span></a><a href="#s3"><i>3</i><span>Where they drop</span></a>
+  <a href="#s4"><i>4</i><span>The bag</span></a><a href="#s5"><i>5</i><span>Competitors</span></a><a href="#s6"><i>6</i><span>Opportunities</span></a>
+  <a href="#s7"><i>7</i><span>Test briefs</span></a><a href="#s8"><i>8</i><span>Homepage</span></a><a href="#s9"><i>9</i><span>Tracking</span></a><a href="#s10"><i>10</i><span>Detail</span></a>
+</div><div class="rnav-meta"><b id="rnavPct">0%</b> read<span id="rnavLeft"></span></div></div><div class="rnav-bar"><i id="rnavFill"></i></div></nav>
+</div>
+
+<header class="hd"><div class="wrap">
+  <p class="eyebrow">Next cycle &middot; bag, checkout, payment and homepage</p>
+  <h1>Mia's bag is five different shoppers, and it is built for <em>none of them</em></h1>
+  <p class="lead">This version starts from the people in the bag: what they came for, what the page gives them today, and what it should give them. It uses Mia's GA4 website stream (28 days to 15 October 2026), Mia's live pages, the Troopod team's logged-in walkthrough, and a teardown of six competitors' bags captured on 16 October 2026. Every claim is labelled <span class="lab o">OBSERVED</span> seen on a page or in data, <span class="lab i">INFERRED</span> our reading of it, or <span class="lab m">MISSING</span> not yet known.</p>
+</div></header>
+
+<div class="wrap">
+
+<!-- 01 -->
+<section class="s" id="s1">
+  <div class="sec-head"><div class="sec-num">01</div><div>
+    <h2>The one-page summary</h2>
+    <p>For the ecommerce manager: the three biggest leaks, the five actions that matter most, and the decisions only Mia can make.</p>
+  </div></div>
+  <div class="sum3">
+    <div class="hl down"><div class="hl-big">64%</div><div class="hl-lab">Leak 1: the login wall</div><div class="hl-txt">9,651 of 15,074 logged-out bag viewers never open the login. Mia's sister brand Tanishq already offers "Guest Checkout" at the same step.</div></div>
+    <div class="hl down"><div class="hl-big">52%</div><div class="hl-lab">Leak 2: the payment page</div><div class="hl-txt">1,829 went to payment, 884 paid. A ₹1.82 lakh order was offered Cards and Netbanking only. 402 failures carry no reason.</div></div>
+    <div class="hl down"><div class="hl-big">6%</div><div class="hl-lab">Leak 3: diamonds on mobile</div><div class="hl-txt">Of 10,285 diamond pieces added to bag on mobile, 612 reached checkout. On desktop it is 22.5%. Diamond is the most-added product type.</div></div>
+  </div>
+  <div class="shot" style="margin-top:14px">
+    <div class="obs"><div class="who">Five actions, in order</div><ol class="ol">
+      <li><b>Open a guest path at the bag</b>, phone number only, as Tanishq does.</li>
+      <li><b>Show only coupons the shopper can use</b>, and say why one is refused.</li>
+      <li><b>Fix payment</b>: confirm methods by order value, UPI to the jewellery limit, a summary on the payment page.</li>
+      <li><b>Bring the store into the bag for diamond pieces</b>: stock near you, reserve to try.</li>
+      <li><b>Fix the tracking</b> that hides pre-book orders, coupon reasons and payment failures.</li></ol></div>
+    <div class="obs"><div class="who">Decisions only Mia can make</div><ol class="ol">
+      <li><b>Leadership:</b> guest checkout and what identity is required; whether a store sale started online counts as an online win.</li>
+      <li><b>Offers:</b> the eligibility rules for MIA500, MIBD12, MIAD15, and whether to auto-apply.</li>
+      <li><b>Payments:</b> UPI category limit, EMI on stone value, with Juspay.</li>
+      <li><b>Operations:</b> store stock feed for the bag; gift wrap and message.</li>
+      <li><b>Analytics:</b> are pre-book orders recorded as purchases?</li></ol></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="s" id="s2">
+  <div class="sec-head"><div class="sec-num">02</div><div>
+    <h2>Who is in Mia's bag: five shoppers</h2>
+    <p>Built from what people add, search, click and buy on the website. Unit counts are items added to bag over 28 days. Each card says what that shopper came for, what the bag gives them today, and what it should give them.</p>
+  </div></div>
+  <div class="persona">
+    <div class="pc gap"><h3>1. The diamond shortlister</h3><div class="pn">13,992<small>diamond pieces added to bag, the largest type; 1.1% bought</small></div>
+      <dl><dt>Who</dt><dd><span class="lab o">OBSERVED</span>Mostly mobile. Mobile adds reach checkout <b>6.0%</b> of the time, desktop <b>22.5%</b>. 12,411 mobile users opened "Find in store". 89,632 sessions landed on a store details page.</dd>
+      <dt>Came for</dt><dd><span class="lab i">INFERRED</span>A ₹20K to ₹80K piece they want to be sure of: real stones, the right size, a way back if it disappoints. The bag works as a shortlist, and many finish in a store.</dd>
+      <dt>Bag gives today</dt><dd><span class="lab o">OBSERVED</span>Price, weight, a BIS badge. No certificate line, no store option, no EMI, no way to save or share the bag.</dd>
+      <dt>Should give</dt><dd>"Available at 3 Mia stores near 560045, reserve to try", the certificate in the box, returns in one line, EMI on the stone value.</dd></dl></div>
+    <div class="pc"><h3>2. The festival coin buyer</h3><div class="pn">4,745<small>coins added (3,126 gold, 1,619 silver); 53% of gold coins reach checkout</small></div>
+      <dl><dt>Who</dt><dd><span class="lab o">OBSERVED</span>The bag's best converters: 12.6% of gold coins added are bought. 56% of units bought in homepage-landing sessions are coins (92 of 165). 57,249 sessions land on "Gold rate today"; 3 buy.</dd>
+      <dt>Came for</dt><dd><span class="lab i">INFERRED</span>A known weight at today's rate, delivered before Dhanteras, with purity they can trust.</dd>
+      <dt>Bag gives today</dt><dd><span class="lab o">OBSERVED</span>Name, price, weight. No rate used, no purity, no "delivered by" until a pincode is typed.</dd>
+      <dt>Should give</dt><dd>"24 kt, 999.9 purity, priced at ₹X/g today, delivered by 6 Nov". On the gold rate page, a coin you can buy at that rate.</dd></dl></div>
+    <div class="pc"><h3>3. The silver and small-ticket buyer</h3><div class="pn">10,727<small>silver pieces added; 19% reach checkout, 5.1% bought</small></div>
+      <dl><dt>Who</dt><dd><span class="lab o">OBSERVED</span>Average unit value ₹1,800 to ₹3,400 (toe rings ₹1,824, anklets ₹3,102). Site searches: "Silver ring" 986, "Payal" 398, "Anklet" 355.</dd>
+      <dt>Came for</dt><dd><span class="lab i">INFERRED</span>A quick, low-risk purchase. At ₹1,800, ₹500 off is a quarter of the price, so MIA500 decides the sale.</dd>
+      <dt>Bag gives today</dt><dd><span class="lab o">OBSERVED</span>A login wall before checkout, and MIA500 refused for 3,477 people.</dd>
+      <dt>Should give</dt><dd>The fastest path in the store: guest checkout, the code applied for those who qualify, free delivery said once.</dd></dl></div>
+    <div class="pc"><h3>4. The gifter</h3><div class="pn">60%<small>of visitors Google can identify are men</small></div>
+      <dl><dt>Who</dt><dd><span class="lab o">OBSERVED</span>"Under ₹15K" is the most clicked price tile (2,082 users). 3,333 people had a birthday or anniversary code refused; 158 had one accepted. <span class="lab i">INFERRED</span> Many are buying for someone else's birthday, not their own.</dd>
+      <dt>Came for</dt><dd><span class="lab i">INFERRED</span>A present that arrives on time, looks like a present, and can be exchanged by the person who receives it.</dd>
+      <dt>Bag gives today</dt><dd><span class="lab o">OBSERVED</span>No gift message, no wrap, no gift receipt in the bag.</dd>
+      <dt>Should give</dt><dd>"Add a gift message", free wrap, delivery date, and a line on exchange for the recipient.</dd></dl></div>
+    <div class="pc"><h3>5. The returning member</h3><div class="pn">16%<small>of orders redeem loyalty points (182 of 1,118)</small></div>
+      <dl><dt>Who</dt><dd><span class="lab o">OBSERVED</span>4,608 people opened the bag already logged in. Returning desktop visitors who land on the homepage convert at 1.18%, the best segment on the site.</dd>
+      <dt>Came for</dt><dd><span class="lab i">INFERRED</span>To buy again quickly and use what they have earned.</dd>
+      <dt>Checkout gives today</dt><dd><span class="lab o">OBSERVED</span> (team walkthrough) A new address is not selected after it is added; billing is asked separately; points sit in a block they must open.</dd>
+      <dt>Should give</dt><dd>Saved address preselected, points balance shown, one tap to pay.</dd></dl></div>
+  </div>
+  <div class="src">GA4 item metrics (itemsAddedToCart, itemsCheckedOut, itemsPurchased) by item name, grouped by Troopod into types by keyword: coin, silver, diamond, other gold. Units, not people. Google signals cover about 27% of users. Promo codes: promo_code_applied by status, users.</div>
+</section>
+
+<!-- 03 -->
+<section class="s" id="s3">
+  <div class="sec-head"><div class="sec-num">03</div><div>
+    <h2>Where each shopper drops</h2>
+    <p>The 18% bag-to-checkout rate for the site hides a tenfold spread by product. Coins pass through the bag; diamonds stall in it, mostly on mobile.</p>
+  </div></div>
+  <div class="tscroll"><table>
+    <thead><tr><th>Product type</th><th>Device</th><th class="num">Added</th><th class="num">Reached checkout</th><th class="num">Bought</th><th class="num">Added to checkout</th><th class="num">Added to bought</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Diamond jewellery</td><td>Mobile</td><td class="num">10,285</td><td class="num">612</td><td class="num">107</td><td class="num"><span class="chip down">6.0%</span></td><td class="num">1.0%</td></tr>
+      <tr><td class="k">Diamond jewellery</td><td>Desktop</td><td class="num">3,603</td><td class="num">811</td><td class="num">51</td><td class="num">22.5%</td><td class="num">1.4%</td></tr>
+      <tr><td class="k">Other gold jewellery</td><td>Mobile</td><td class="num">7,610</td><td class="num">589</td><td class="num">105</td><td class="num"><span class="chip down">7.7%</span></td><td class="num">1.4%</td></tr>
+      <tr><td class="k">Silver jewellery</td><td>Mobile</td><td class="num">7,843</td><td class="num">1,373</td><td class="num">410</td><td class="num">17.5%</td><td class="num">5.2%</td></tr>
+      <tr><td class="k">Gold coins</td><td>Mobile</td><td class="num">2,607</td><td class="num">1,057</td><td class="num">179</td><td class="num"><span class="chip up">40.5%</span></td><td class="num">6.9%</td></tr>
+      <tr><td class="k">Silver coins</td><td>Mobile</td><td class="num">1,255</td><td class="num">482</td><td class="num">93</td><td class="num">38.4%</td><td class="num">7.4%</td></tr>
+    </tbody></table></div>
+  <h4 class="grp">The festive pieces that do not sell online</h4>
+  <div class="tscroll"><table class="wtab">
+    <thead><tr><th>Piece</th><th>Added, checkout, bought</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td class="wk"><b>Striking Light Diamond Jhumka</b><span>festive hero piece</span></td><td><div class="wbig down">280 / 17 / 0</div></td><td class="wm" rowspan="3"><span class="lab o">OBSERVED</span>29 pieces had 30 or more adds and no checkout at all, 1,363 adds in total. Your logged-in screenshot shows Lightscapes pieces in the bag marked "PRE-BOOKED" for 6 November, with "Once you purchase a pre-booked item, it can't be cancelled." <span class="lab m">MISSING</span> Whether pre-book orders fire GA's purchase event. If they do not, this is a tracking gap. If they do, the pre-book path is losing every one of these shoppers.</td></tr>
+      <tr><td class="wk"><b>Charming Diya Diamond Pendant</b></td><td><div class="wbig down">199 / 0 / 0</div></td></tr>
+      <tr><td class="wk"><b>Radiant Layered Diamond Jhumka</b><span>in the screenshot bag</span></td><td><div class="wbig down">39 / 0 / 0</div></td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 04 -->
+<section class="s" id="s4">
+  <div class="sec-head"><div class="sec-num">04</div><div>
+    <h2>The bag, seen by each shopper</h2>
+    <p>What each shopper needs to see before paying, and whether Mia's bag shows it. From the logged-out mobile capture (16 October) and your logged-in desktop screenshot of a ₹89,539 bag.</p>
+  </div></div>
+  <div class="tscroll"><table class="mat">
+    <thead><tr><th style="text-align:left">What the shopper needs</th><th>Diamond</th><th>Coin</th><th>Silver</th><th>Gifter</th><th>Member</th><th style="text-align:left">Mia today</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Check out without an account</td><td>●</td><td>●</td><td>●</td><td>●</td><td></td><td style="text-align:left"><span class="mk a">○</span>"Login to Proceed" opens a phone and OTP sheet</td></tr>
+      <tr><td class="k">The final total</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td style="text-align:left"><span class="mk s">●</span>Grand Total shown, logged out and in</td></tr>
+      <tr><td class="k">A delivery date</td><td>●</td><td>●</td><td>◐</td><td>●</td><td>◐</td><td style="text-align:left"><span class="mk w">◐</span>Per item, once a pincode is entered; the product page pincode is not carried over</td></tr>
+      <tr><td class="k">Which saving came from where</td><td>●</td><td></td><td>●</td><td></td><td>●</td><td style="text-align:left"><span class="mk a">○</span>"MIA500 Applied! You saved ₹11,287", of which ₹10,787 is the making-charge offer; "Discount ₹0, Coupon Discount ₹11,287"</td></tr>
+      <tr><td class="k">Coupons I can actually use</td><td></td><td></td><td>●</td><td>●</td><td>●</td><td style="text-align:left"><span class="mk a">○</span>All three codes shown to everyone; 3,477 MIA500 refusals</td></tr>
+      <tr><td class="k">Returns, insured delivery, certificate</td><td>●</td><td>●</td><td>◐</td><td>●</td><td></td><td style="text-align:left"><span class="mk w">◐</span>BIS badge only, on both views</td></tr>
+      <tr><td class="k">How I can pay (UPI, EMI)</td><td>●</td><td>●</td><td>●</td><td></td><td></td><td style="text-align:left"><span class="mk a">○</span>Not on the bag; payment page showed Cards and Netbanking</td></tr>
+      <tr><td class="k">See it in a store</td><td>●</td><td></td><td></td><td>◐</td><td></td><td style="text-align:left"><span class="mk a">○</span>On the product page only</td></tr>
+      <tr><td class="k">Gift message or wrap</td><td></td><td>◐</td><td></td><td>●</td><td></td><td style="text-align:left"><span class="mk a">○</span>Not in the bag</td></tr>
+      <tr><td class="k">The item on the first screen</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td style="text-align:left"><span class="mk w">◐</span>Desktop yes; mobile, second screen, under offers and a pre-book block</td></tr>
+      <tr><td class="k">A next offer worth reaching</td><td>◐</td><td></td><td>◐</td><td></td><td></td><td style="text-align:left"><span class="mk w">◐</span>"Add products worth ₹1,99,674 to unlock 75% Off" on a ₹1 lakh bag</td></tr>
+    </tbody></table></div>
+  <div class="src">● needs it &middot; ◐ helps &middot; blank does not matter much. Mia column: <span class="mk s">●</span> present &middot; <span class="mk w">◐</span> partly &middot; <span class="mk a">○</span> absent. Corrected from version 1: the bag does show a Grand Total, and shows a delivery date per item once a pincode is entered.</div>
+</section>
+
+<!-- 05 -->
+<section class="s" id="s5">
+  <div class="sec-head"><div class="sec-num">05</div><div>
+    <h2>What six competitors put in the bag</h2>
+    <p>Captured on 16 October 2026 on a mobile browser, logged out, one diamond or gold piece of ₹18K to ₹32K in the bag, pincode 560001, stopping at the first gate. Every cell is something we saw on their page; bags were emptied afterwards.</p>
+  </div></div>
+  <div class="tscroll cg"><table>
+    <thead><tr><th>Brand</th><th>Guest checkout</th><th>Delivery date in bag</th><th>Trust by the button</th><th>Payment logos on bag</th><th>Coupons</th><th>Gifting in bag or checkout</th><th>Store in bag</th></tr></thead>
+    <tbody>
+      <tr class="mia"><td class="k">Mia, today</td><td><span class="mk a">○</span><span class="n">"Login to Proceed", OTP sheet</span></td><td><span class="mk w">◐</span><span class="n">After pincode entry</span></td><td><span class="mk w">◐</span><span class="n">BIS badge</span></td><td><span class="mk a">○</span></td><td><span class="mk w">◐</span><span class="n">List; no reasons; savings mislabelled</span></td><td><span class="mk a">○</span></td><td><span class="mk a">○</span></td></tr>
+      <tr><td class="k">Tanishq</td><td><span class="mk s">●</span><span class="n">"Guest User" tab, "Guest Checkout" with mobile number</span></td><td><span class="mk a">○</span><span class="n">"Delivery Available", no date</span></td><td><span class="mk s">●</span><span class="n">Purity, Secure Delivery, Secure Payments by TATA</span></td><td><span class="mk a">○</span></td><td><span class="mk w">◐</span><span class="n">WELCOME500 listed, not applied</span></td><td><span class="mk s">●</span><span class="n">"Add A Gift Message"</span></td><td><span class="mk a">○</span></td></tr>
+      <tr><td class="k">CaratLane</td><td><span class="mk a">○</span><span class="n">Mobile OTP only</span></td><td><span class="mk s">●</span><span class="n">"Delivery by - Tomorrow 4PM-9PM"</span></td><td><span class="mk s">●</span><span class="n">15 Day Money Back, Warranty, Certified, Exchange</span></td><td><span class="mk a">○</span></td><td><span class="mk w">◐</span><span class="n">"Apply Coupon" row</span></td><td><span class="mk s">●</span><span class="n">Free gift wrap and note at checkout</span></td><td><span class="mk s">●</span><span class="n">"Pickup today from 5 Stores nearby"</span></td></tr>
+      <tr><td class="k">BlueStone</td><td><span class="mk s">●</span><span class="n">Contact form, OTP autofill optional; "Express Checkout… Preferred by 83% users"</span></td><td><span class="mk a">○</span><span class="n">On product page only</span></td><td><span class="mk s">●</span><span class="n">"30-Day Returnable, Lifetime exchange &amp; Buy back"</span></td><td><span class="mk s">●</span><span class="n">UPI, Visa, Mastercard, AmEx, RuPay</span></td><td><span class="mk w">◐</span><span class="n">Listed codes, not applied</span></td><td><span class="mk s">●</span><span class="n">"Gift Message" row with "Add", at the top</span></td><td><span class="mk a">○</span></td></tr>
+      <tr><td class="k">GIVA</td><td><span class="mk s">●</span><span class="n">Straight to address, map with current location</span></td><td><span class="mk s">●</span><span class="n">"Free Delivery by 19th October"</span></td><td><span class="mk s">●</span><span class="n">BIS Hallmark, Certified Lab Diamonds</span></td><td><span class="mk w">◐</span><span class="n">Methods listed in text at the address step</span></td><td><span class="mk s">●</span><span class="n">Each code says why it does not apply</span></td><td><span class="mk w">◐</span><span class="n">Gift box cross-sell ₹999</span></td><td><span class="mk a">○</span></td></tr>
+      <tr><td class="k">Candere</td><td><span class="mk a">○</span><span class="n">Login with email, mobile or Google</span></td><td><span class="mk s">●</span><span class="n">"Delivery by 23rd Oct 2026"</span></td><td><span class="mk s">●</span><span class="n">Return, Kalyan trust tiles, ratings</span></td><td><span class="mk s">●</span><span class="n">"We Accept" Visa, Mastercard, RuPay, Amex, PayPal</span></td><td><span class="mk s">●</span><span class="n">Best code auto-applied and named: "Discount (GLOW)"</span></td><td><span class="mk a">○</span></td><td><span class="mk a">○</span></td></tr>
+      <tr><td class="k">Melorra</td><td><span class="mk a">○</span><span class="n">Mobile login only</span></td><td><span class="mk w">◐</span><span class="n">Bag date contradicts product page</span></td><td><span class="mk a">○</span></td><td><span class="mk a">○</span></td><td><span class="mk a">○</span><span class="n">Not visible</span></td><td><span class="mk s">●</span><span class="n">"Gift wrap this product" toggle</span></td><td><span class="mk a">○</span></td></tr>
+    </tbody></table></div>
+  <div class="tldr"><p>Three of six let a shopper reach the address without an account, and one of them is Tanishq. Five of six show trust by the button. Nobody but CaratLane puts a store in the bag, which is the gap Mia's 200-plus stores can fill best.</p></div>
+  <div class="src">Evidence: data/competitors/cart_teardown/&lt;brand&gt;/ (screenshots and page text per step). Tanishq's own returns page states "30 days for Mia product". No competitor showed EMI on the pages captured.</div>
+</section>
+
+<!-- 06 -->
+<section class="s" id="s6">
+  <div class="sec-head"><div class="sec-num">06</div><div>
+    <h2>Eighteen opportunities, ranked</h2>
+    <p>Ranked by evidence, how much revenue passes through the step, confidence and effort. Confidence: 3 is two independent sources agreeing, 2 is one strong data source, 1 is visual or heuristic only. No lift percentages: these are a roadmap, not wins, until tested.</p>
+  </div></div>
+  <div class="tscroll"><table class="otab">
+    <thead><tr><th>#</th><th>Opportunity, page and shopper</th><th>Evidence</th><th>Change, and who already does it</th><th>Metric, and what could go wrong</th></tr></thead>
+    <tbody>
+      <tr><td class="on">1</td><td class="ot"><b>A guest path at the bag</b>Bag, logged-out, all shoppers</td><td class="oe"><span class="lab o">OBSERVED</span>Only action "Login to Proceed". 64% of 15,074 logged-out bag viewers never open the login; of those who type a number, 90% verify.</td><td class="oc">Bag button opens checkout with a "Guest checkout" option using the mobile number, OTP to confirm the order. Precedent: <b>Tanishq</b> "Guest User" tab; BlueStone express checkout; GIVA.<div class="ice"><span class="h">Impact high</span><span class="h">Confidence 3</span><span class="md">Effort medium</span></div></td><td class="om">Bag to checkout, 18.4% today. Guardrails: points redemptions, sign-ups, order cancellations.<span class="risk"><b>Could not work</b>Loses the ₹500 sign-up moment and the points link. Mitigate: offer the account after the order, keep the phone number required.</span></td></tr>
+      <tr><td class="on">2</td><td class="ot"><b>Coupons that tell the truth</b>Product page and bag, silver buyers and gifters</td><td class="oe"><span class="lab o">OBSERVED</span>MIA500 refused for 3,477 people, accepted for 1,089; MIAD15 1,772 to 45; MIBD12 1,561 to 113. All three listed on every product page.</td><td class="oc">Show only codes the shopper qualifies for; say why one is refused ("already used", "first order only", "birthday month only"); apply MIA500 for eligible first orders. Precedent: GIVA lists why each code fails; Candere auto-applies the best one.<div class="ice"><span class="h">Impact high</span><span class="h">Confidence 3</span><span class="md">Effort medium</span></div></td><td class="om">Bag to checkout. Guardrail: discount cost per order.<span class="risk"><b>Could not work</b>Auto-apply gives ₹500 to people who would pay anyway. Rejection reasons are <span class="lab m">MISSING</span>; "already used" is likely but unproven.</span></td></tr>
+      <tr><td class="on">3</td><td class="ot"><b>Payment methods and a summary on the payment page</b>Payment, diamond and high-value buyers</td><td class="oe"><span class="lab o">OBSERVED</span>52% of those at payment do not pay. ₹1,82,280 order offered Cards and Netbanking only; right half blank. 402 failures, no reason logged.</td><td class="oc">Confirm methods by order value; UPI up to the jewellery category limit (reported ₹2 lakh); card EMI on stone value; item, date and total beside the methods. Precedent: BlueStone and Candere show UPI and card logos on the bag.<div class="ice"><span class="h">Impact high</span><span class="md">Confidence 2</span><span class="md">Effort with Juspay</span></div></td><td class="om">Payment to paid, 48% today.<span class="risk"><b>Could not work</b>Banks can cap UPI below the limit; EMI subsidy costs Mia; gold may be excluded from EMI.</span></td></tr>
+      <tr><td class="on">4</td><td class="ot"><b>The store inside the bag</b>Bag, diamond shortlisters on mobile</td><td class="oe"><span class="lab o">OBSERVED</span>Diamond mobile adds reach checkout 6.0% vs 22.5% desktop; 12,411 mobile users used Find in store. <span class="lab i">INFERRED</span> Many finish in a store.</td><td class="oc">On diamond lines: "At 3 Mia stores near 560045, reserve to try", plus video call. Precedent: CaratLane "Pickup today from 5 Stores nearby" and "See it live".<div class="ice"><span class="h">Impact high</span><span class="md">Confidence 2</span><span class="md">Effort high</span></div></td><td class="om">Diamond checkouts plus store reservations.<span class="risk"><b>Could not work</b>Moves sales into stores and makes the website look worse unless Mia credits store sales started online. Needs a store stock feed.</span></td></tr>
+      <tr><td class="on">5</td><td class="ot"><b>Find out what happens to pre-book orders</b>Festive pieces, diamond shortlisters</td><td class="oe"><span class="lab o">OBSERVED</span>29 pieces with 1,363 adds and no checkout; festive hero pieces 0 purchases. <span class="lab m">MISSING</span> Whether pre-book orders are tracked.</td><td class="oc">Check tracking first. Then lead the banner with the promise: "Delivered by 6 Nov, price as shown", and put "cannot be cancelled once paid" after it. Precedent: Tanishq "Pre-Book Now and Get It Delivered by Dhanteras".<div class="ice"><span class="h">Impact high if real</span><span class="md">Confidence 1</span><span class="h">Effort low</span></div></td><td class="om">Pre-book bag to purchase.<span class="risk"><b>Could not work</b>If pre-book orders are recorded elsewhere, the zero is a tracking gap, not a leak.</span></td></tr>
+      <tr><td class="on">6</td><td class="ot"><b>Name each saving correctly</b>Bag, everyone with an offer</td><td class="oe"><span class="lab o">OBSERVED</span>"MIA500 Applied! You saved ₹11,287"; ₹10,787 of it is the making-charge offer. Summary: "Discount ₹0, Coupon Discount ₹11,287".</td><td class="oc">Two rows: "50% off making charges −₹10,787" and "MIA500 −₹500". Precedent: Candere "Discount (GLOW)"; Melorra "Discount on Making Charges".<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Ship as a fix.<span class="risk"><b>Could not work</b>Makes MIA500 look small, which is honest.</span></td></tr>
+      <tr><td class="on">7</td><td class="ot"><b>A delivery date without asking</b>Bag, coin buyers and gifters</td><td class="oe"><span class="lab o">OBSERVED</span>Logged-out bag opens on "Enter Pincode"; the date shows per item once one is typed. 10,317 people checked a pincode on a product page.</td><td class="oc">Carry the product page pincode into the bag and show "Delivered by" on each line. Precedent: CaratLane, GIVA, Candere on the item line.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Bag to checkout.<span class="risk"><b>Could not work</b>A date that slips does more harm than none; use the courier estimate.</span></td></tr>
+      <tr><td class="on">8</td><td class="ot"><b>Trust and payment proof by the button</b>Bag, diamond and first-time buyers</td><td class="oe"><span class="lab o">OBSERVED</span>Only a BIS badge, logged in and out.</td><td class="oc">"30-day returns, insured delivery, BIS hallmark and certificate" plus logos of methods actually offered. Precedent: five of six competitors. Tanishq's own site states Mia's 30-day return.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Bag to checkout.<span class="risk"><b>Could not work</b>Must match each item; coins may not be returnable.</span></td></tr>
+      <tr><td class="on">9</td><td class="ot"><b>Stock checked at the bag</b>Bag, everyone</td><td class="oe"><span class="lab o">OBSERVED</span>193 told "out of stock" after choosing an address. 173,357 of 1,128,032 product views (15%) were of out-of-stock items.</td><td class="oc">Check stock on bag load; offer similar pieces.<div class="ice"><span class="md">Impact medium</span><span class="h">Confidence 3</span><span class="md">Effort medium</span></div></td><td class="om">Ship as a fix.<span class="risk"><b>Could not work</b>Store and online stock may lag.</span></td></tr>
+      <tr><td class="on">10</td><td class="ot"><b>Mobile bag: item first</b>Bag, mobile</td><td class="oe"><span class="lab o">OBSERVED</span>Item on the second screen under Check Availability, pre-book, offers and the ladder table. Desktop is fine.</td><td class="oc">Item, total and date first; one offer line under it. Precedent: CaratLane, GIVA, Candere.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Mobile bag to checkout, 16.1%.<span class="risk"><b>Could not work</b>The ladder may drive add-ons; keep its one-line bar.</span></td></tr>
+      <tr><td class="on">11</td><td class="ot"><b>A coin you can buy from the gold rate page</b>Gold rate page, coin buyers</td><td class="oe"><span class="lab o">OBSERVED</span>57,249 landing sessions; 3.5% view a product; 3 buy.</td><td class="oc">"Today's 24 kt rate, 0.5 g, 1 g, 2 g coins, delivered by 6 Nov" under the rate table. Precedent: Tanishq homepage "Lock Your Best Gold Rate".<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Gold rate to product view.<span class="risk"><b>Could not work</b>Coin margins are thin; CM2 by category is <span class="lab m">MISSING</span>.</span></td></tr>
+      <tr><td class="on">12</td><td class="ot"><b>Gifting in the bag</b>Bag, gifters</td><td class="oe"><span class="lab o">OBSERVED</span>No gift option in the bag. 3,333 had a birthday or anniversary code refused.</td><td class="oc">"Add a gift message", free wrap, gift receipt without price. Precedent: BlueStone, Tanishq, Melorra, CaratLane.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="md">Effort medium</span></div></td><td class="om">Gift share of orders.<span class="risk"><b>Could not work</b>Packing cost; invoice rules for a price-free receipt need checking.</span></td></tr>
+      <tr><td class="on">13</td><td class="ot"><b>Address preselected, billing same by default</b>Checkout, members</td><td class="oe"><span class="lab o">OBSERVED</span>Team walkthrough; useSelectedAddress 3,958 events vs add_shipping_info 3,955; 74% complete the address.</td><td class="oc">Select the new address; "Billing same as delivery" ticked.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Ship as a fix.<span class="risk"><b>Could not work</b>Keep an untick path for GST invoices.</span></td></tr>
+      <tr><td class="on">14</td><td class="ot"><b>Homepage: search first</b>Homepage, everyone</td><td class="oe"><span class="lab o">OBSERVED</span>Search is the first next step (6,460 views); 37% of homepage sessions view a product.</td><td class="oc">Open search bar with chips Rings, Earrings, Silver, Coins, Under ₹15K. Precedent: CaratLane, GIVA, Tanishq, Candere.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Homepage to product view, 37.4%.<span class="risk"><b>Could not work</b>Pushes the campaign hero down.</span></td></tr>
+      <tr><td class="on">15</td><td class="ot"><b>Homepage login pop-up later</b>Homepage, new visitors</td><td class="oe"><span class="lab o">OBSERVED</span>Shown to 67% of homepage users; 77% close it; 2,112 verify.</td><td class="oc">After a product view. Precedent: no login pop-up on the homepage at Tanishq, CaratLane, BlueStone or Candere.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Homepage to product view.<span class="risk"><b>Could not work</b>Fewer sign-ups; test it.</span></td></tr>
+      <tr><td class="on">16</td><td class="ot"><b>Points and gift cards, simpler</b>Checkout, members</td><td class="oe"><span class="lab o">OBSERVED</span>182 orders used points, 3 a gift card; at least 20 sixteen-digit numbers typed into the coupon box.</td><td class="oc">Points balance shown; gift card behind a link. Precedent: CaratLane shows points earned in the bag; GIVA "Redeem Gift Card".<div class="ice"><span class="md">Impact low</span><span class="md">Confidence 2</span><span class="h">Effort low</span></div></td><td class="om">Ship as a fix.<span class="risk"><b>Could not work</b>Gift card holders may miss the link.</span></td></tr>
+      <tr><td class="on">17</td><td class="ot"><b>A next offer worth reaching</b>Bag, big baskets</td><td class="oe"><span class="lab o">OBSERVED</span>"Add products worth ₹1,99,674 to unlock 75% Off" on a ₹1 lakh bag.</td><td class="oc">Show the next tier only when it is within reach; otherwise show what is already saved.<div class="ice"><span class="md">Impact low</span><span class="md">Confidence 1</span><span class="h">Effort low</span></div></td><td class="om">Order value.<span class="risk"><b>Could not work</b>May still nudge a few very large orders.</span></td></tr>
+      <tr><td class="on">18</td><td class="ot"><b>Homepage speed</b>Homepage, mobile</td><td class="oe"><span class="lab o">OBSERVED</span>Mia's own load-time tag: homepage median 7.2 on mobile, bag 3.9. <span class="lab m">MISSING</span> PageSpeed (blocked without a key) and the tag's definition.</td><td class="oc">Check the hero carousel and its images first.<div class="ice"><span class="md">Impact medium</span><span class="md">Confidence 1</span><span class="md">Effort medium</span></div></td><td class="om">Homepage load time.<span class="risk"><b>Could not work</b>The tag may not be seconds.</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 07 -->
+<section class="s" id="s7">
+  <div class="sec-head"><div class="sec-num">07</div><div>
+    <h2>Ten test briefs and a 90-day order</h2>
+    <p>Sample sizes use Mia's own 28-day traffic and baselines, at 95% confidence and 80% power, with the minimum change to detect stated. They are Troopod's arithmetic for Mia to approve, not engine outputs. Tests on the same page run one after another, not together.</p>
+  </div></div>
+  <div class="brief">
+    <div class="tb2"><div class="tid">T1 &middot; WEEKS 1 TO 4 &middot; BAG</div><h3>Guest checkout at the bag</h3><div class="hyp">Because 64% of logged-out bag viewers never open the login, we believe a guest checkout with mobile number, as Tanishq runs, will raise bag to checkout. We will watch points redemptions and sign-ups. The idea is wrong if bag to checkout does not rise by at least 10% relative.</div><dl><dt>Control</dt><dd>"Login to Proceed" sheet</dd><dt>Variant</dt><dd>"Checkout" with Guest and Login tabs</dd><dt>Primary</dt><dd><b>Bag to checkout, 18.4%</b></dd><dt>Size</dt><dd>7,227 bag viewers per arm, about 3.5 weeks</dd><dt>Needs</dt><dd>Leadership decision on identity; a guest flow on Mia's platform (Tanishq runs one)</dd></dl></div>
+    <div class="tb2"><div class="tid">T2 &middot; WEEKS 5 TO 8 &middot; BAG</div><h3>Eligible coupons only, with reasons</h3><div class="hyp">Because 3,477 people had MIA500 refused, we believe showing only eligible codes, with a reason when refused, will raise bag to checkout for logged-out shoppers. We will watch discount cost per order. Wrong if refusals fall but checkout does not move.</div><dl><dt>Primary</dt><dd><b>Bag to checkout</b></dd><dt>Size</dt><dd>About 3.5 weeks at 10% relative</dd><dt>Needs</dt><dd>Eligibility rules; a reason value on promo_code_applied</dd></dl></div>
+    <div class="tb2"><div class="tid">T3 &middot; WEEKS 9 TO 13 &middot; BAG, MOBILE</div><h3>Item first, one offer line, date on the line</h3><div class="hyp">Because the mobile item sits on the second screen under four blocks, we believe item, total and delivery date first will raise mobile bag to checkout. We will watch order value. Wrong if order value falls more than checkout rises.</div><dl><dt>Primary</dt><dd><b>Mobile bag to checkout, 16.1%</b></dd><dt>Size</dt><dd>8,506 per arm, about 5.5 weeks</dd><dt>Needs</dt><dd>Pincode carry-over from the product page</dd></dl></div>
+    <div class="tb2"><div class="tid">T4 &middot; WEEKS 1 TO 2 &middot; HOMEPAGE</div><h3>Search first on the homepage</h3><div class="hyp">Because search is the first thing homepage visitors do, we believe an open search bar with category chips will raise homepage to product view. We will watch homepage OTP verifications. Wrong if product views do not rise by 5% relative.</div><dl><dt>Primary</dt><dd><b>Homepage to product view, 37.4%</b></dd><dt>Size</dt><dd>10,611 per arm, about 1 week</dd></dl></div>
+    <div class="tb2"><div class="tid">T5 &middot; WEEKS 3 TO 4 &middot; GOLD RATE PAGE</div><h3>Buy a coin at today's rate</h3><div class="hyp">Because 57,249 sessions land on the gold rate page and 3 buy, we believe a coin module at today's rate will raise product views from it. We will watch coin margin. Wrong if views rise by less than 20% relative.</div><dl><dt>Primary</dt><dd><b>Gold rate to product view, 3.5%</b></dd><dt>Size</dt><dd>11,859 per arm, under 2 weeks</dd><dt>Needs</dt><dd>CM2 for coins</dd></dl></div>
+    <div class="tb2"><div class="tid">T6 &middot; WITH JUSPAY &middot; PAYMENT</div><h3>Methods and summary on the payment page</h3><div class="hyp">Because half of shoppers at payment leave and a ₹1.82 lakh order saw two methods, we believe UPI to the category limit and an order summary will raise payment to paid. We will watch gateway cost per order. Wrong if paid rate does not rise by 10% relative.</div><dl><dt>Primary</dt><dd><b>Payment to paid, 48.3%</b></dd><dt>Size</dt><dd>1,681 per arm, about 7.5 weeks</dd><dt>Needs</dt><dd>Methods by order value; failure reasons logged first</dd></dl></div>
+    <div class="tb2"><div class="tid">T7 &middot; NEXT QUARTER &middot; BAG, DIAMOND</div><h3>Reserve to try at a store</h3><div class="hyp">Because diamond adds on mobile reach checkout 6% of the time and 12,411 used Find in store, we believe a store option on diamond lines will raise checkouts plus reservations. We will watch online revenue. Wrong if reservations do not turn into store sales.</div><dl><dt>Primary</dt><dd><b>Diamond checkouts plus reservations</b></dd><dt>Size</dt><dd><span class="lab m">MISSING</span> user-level diamond baseline</dd><dt>Needs</dt><dd>Store stock feed; store sale credit rule</dd></dl></div>
+    <div class="tb2"><div class="tid">T8 &middot; NEXT QUARTER &middot; BAG</div><h3>Trust and payment line by the button</h3><div class="hyp">Because the bag shows only a BIS badge and five of six competitors show returns and certification, we believe one trust line will raise bag to checkout for first-time buyers. Wrong if the change is under 5% relative.</div><dl><dt>Primary</dt><dd><b>Bag to checkout, new users</b></dd><dt>Size</dt><dd>About 3.5 weeks at 10%</dd></dl></div>
+    <div class="tb2"><div class="tid">T9 &middot; NEXT QUARTER &middot; BAG</div><h3>Gift message and wrap</h3><div class="hyp">Because gifters cannot add a message or wrap, we believe a gift row will raise checkout among shoppers who tried an occasion code. Wrong if gift use stays under 5% of orders.</div><dl><dt>Primary</dt><dd><b>Gift share of orders</b></dd><dt>Size</dt><dd><span class="lab m">MISSING</span> baseline</dd><dt>Needs</dt><dd>Packing operations</dd></dl></div>
+    <div class="tb2"><div class="tid">T10 &middot; AFTER TRACKING FIX &middot; PRE-BOOK</div><h3>Promise first on pre-book</h3><div class="hyp">Because festive pieces show no tracked purchases and the banner leads with "can't be cancelled", we believe leading with the delivery date will raise pre-book completion. Wrong if, once tracked, pre-book completion already matches other diamonds.</div><dl><dt>Primary</dt><dd><b>Pre-book bag to purchase</b></dd><dt>Size</dt><dd><span class="lab m">MISSING</span> until tracked</dd></dl></div>
+  </div>
+  <div class="notepill">Ship without a test<span class="sep">|</span>Name each saving (6), stock at the bag (9), address preselected and billing same (13), points and gift card (16), plus every tracking fix in section 09. These remove errors; they do not change how Mia sells.</div>
+</section>
+
+<!-- 08 -->
+<section class="s" id="s8">
+  <div class="sec-head"><div class="sec-num">08</div><div>
+    <h2>The homepage, from the shopper's side</h2>
+    <p>82,878 sessions started on the homepage in 28 days, 5.2% of website sessions, converting at 0.18%. Most arrive already knowing Mia. They want a category, a coin, or a gift, and the page opens on a campaign.</p>
+  </div></div>
+  <div class="tscroll"><table class="wtab">
+    <thead><tr><th>Who arrives</th><th>What they do</th><th>What the page gives, and should give</th></tr></thead>
+    <tbody>
+      <tr><td class="wk"><b>Brand searchers</b><span>Google Ads 25,076; organic 23,552; direct 9,308 sessions</span></td><td><div class="wbig pur">6,460</div><div class="wcap">search views straight after the homepage, the top next step; then earrings 5,939 and rings 3,228</div></td><td class="wm">Today: a magnifier icon on mobile, a Lightscapes carousel. Should: an open search bar with category chips, as CaratLane, GIVA, Tanishq and Candere do.</td></tr>
+      <tr><td class="wk"><b>Coin and rate seekers</b><span>homepage-landing sessions</span></td><td><div class="wbig flat">92 of 165</div><div class="wcap">units bought in homepage-landing sessions are coins</div></td><td class="wm">Today: a coin rail low on the page. Should: today's rate with three coin sizes near the top, as Tanishq's homepage does with "Lock Your Best Gold Rate".</td></tr>
+      <tr><td class="wk"><b>Campaign visitors</b><span>Meta paid 7,550; Instagram 6,877</span></td><td><div class="wbig down">3</div><div class="wcap">purchases between them in 28 days</div></td><td class="wm">Today: a login pop-up for 67% of homepage visitors. Should: no pop-up until a product view; campaigns land on their own pages.</td></tr>
+      <tr><td class="wk"><b>Returning visitors</b><span>desktop, homepage landing</span></td><td><div class="wbig up">1.18%</div><div class="wcap">conversion, against 0.06% for new mobile visitors</div></td><td class="wm">Today: the same page for both. Should: "Continue where you left off" for returning visitors.</td></tr>
+    </tbody></table></div>
+  <div class="src">Search Console is not linked to this GA4 property, so organic search terms are not included. Load times are Mia's own page_load_time tag.</div>
+</section>
+
+<!-- 09 -->
+<section class="s" id="s9">
+  <div class="sec-head"><div class="sec-num">09</div><div>
+    <h2>Tracking problems, kept apart from conversion problems</h2>
+    <p>Each of these makes a number in this report less certain. They are cheap to fix and should go first.</p>
+  </div></div>
+  <div class="tscroll"><table>
+    <thead><tr><th>Problem</th><th>Evidence</th><th>Effect</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Pre-book purchases may not be tracked</td><td>Festive pieces: hundreds of adds, 0 purchases</td><td>Cannot tell a leak from a gap</td><td>Confirm with Mia; fire purchase on pre-book orders</td></tr>
+      <tr><td class="k">Item revenue broken on some coins</td><td>One 0.5 g coin line: 58 units, ₹63 lakh</td><td>Coin revenue share overstated; the main report's 54% coin share used item revenue and needs re-checking</td><td>Check price and quantity sent on purchase</td></tr>
+      <tr><td class="k">Coupon refusals have no reason</td><td>promoCodeStatus only "success" or "failed"</td><td>Cannot size "already used" vs "not eligible"</td><td>Add a reason value</td></tr>
+      <tr><td class="k">Payment failures have no reason</td><td>FailureReason "(not set)" on all 402</td><td>Cannot see declines vs abandonment</td><td>Pass the gateway error code</td></tr>
+      <tr><td class="k">Item category is a browsing context</td><td>Categories such as "Women", "Mother's Day Gifts", "Testing purpose" (50,899 item views on live pieces)</td><td>Category reports mix product types</td><td>Send product type as its own item field</td></tr>
+      <tr><td class="k">Buy Now skips add to cart</td><td>Desktop gold coins: more checkouts (589) than adds (509)</td><td>Add-to-bag rates understate coins</td><td>Fire add_to_cart on Buy Now</td></tr>
+      <tr><td class="k">Cart value rarely set</td><td>544 of 3,061 checkout users</td><td>No clean read on high-value carts</td><td>Set cartValue on every begin_checkout</td></tr>
+      <tr><td class="k">Order IDs mostly "(not set)"</td><td>transactionId</td><td>No order-level analysis</td><td>Send the order number</td></tr>
+      <tr><td class="k">Search Console not linked</td><td>"Search Console fields require an active link"</td><td>No organic query data</td><td>Link it to property 354815777</td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 10 -->
+<section class="s" id="s10" style="border-bottom:none">
+<details class="bigdetail"><summary><span>The detail behind it</span><em>corrections, sources, method</em></summary>
+<div class="detailbody">
+  <section>
+    <h4 class="grp">Corrections to version 1</h4>
+    <div class="tscroll"><table>
+      <thead><tr><th>Version 1 said</th><th>Correct position</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Shoppers cannot see delivery date or total before giving a phone number</td><td>They see the Grand Total, and a per-item date once a pincode is entered. Only payment methods are hidden.</td><td>Logged-out capture shows "Grand Total"; your screenshot shows "Standard delivery by 6th November" per item</td></tr>
+        <tr><td class="k">The item is on the second screen</td><td>On mobile only</td><td>Desktop screenshot shows items in the first screen</td></tr>
+        <tr><td class="k">"Testing purpose" means test orders</td><td>It is a category label on live pieces</td><td>50,899 item views under it</td></tr>
+        <tr><td class="k">Coins are 82% of homepage-session item revenue</td><td>Coins are 56% of units bought (92 of 165)</td><td>Item revenue is broken on at least one coin line</td></tr>
+        <tr><td class="k">Coupon reasons unknown</td><td>Still unknown; "already used" is the likeliest for MIA500</td><td>2,103 refusals were for logged-in shoppers</td></tr>
+      </tbody></table></div>
+  </section>
+  <section>
+    <h4 class="grp">Sources and method</h4>
+    <p>GA4 Data API, property 354815777, platform web, 28 days to 15 October 2026, read-only; personal-data dimensions not queried. Mia captures: 16 October 2026, logged out, real Chrome, bag emptied afterwards. Logged-in bag, checkout and payment: the Troopod team's own walkthrough and screenshots. Competitors: Tanishq, CaratLane, BlueStone, GIVA, Melorra and Candere captured 16 October 2026 with mobile emulation, logged out, pincode 560001 only, bags emptied; evidence in data/competitors/cart_teardown. Category research: Baymard Institute, RBI and NPCI reporting, competitor help pages. This is analysis, not an engine run; both engine runs in the main report remain marked incomplete and this page books no revenue.</p>
+  </section>
+</div></details>
+</section>
+
+</div>
+
+<footer><div class="wrap"><p>
+  Sources &nbsp;GA4 property 354815777, website, 28 days to 15 Oct 2026. Mia and competitor pages captured 16 Oct 2026. Logged-in views from the Troopod team<br>
+  Labels &nbsp;OBSERVED seen on a page or in data &middot; INFERRED our reading &middot; MISSING not yet known<br>
+  Scope &nbsp;Mia by Tanishq website. Apps not included
+</p></div></footer>
+
+<script>
+(function(){
+  var ids=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'],links=[].slice.call(document.querySelectorAll('#rnavItems a'));
+  function top(id){var e=document.getElementById(id);return e?e.getBoundingClientRect().top+window.pageYOffset:0;}
+  function upd(){var y=window.pageYOffset+window.innerHeight*0.55,cur=0,i;
+    for(i=0;i<ids.length;i++){if(y>=top(ids[i]))cur=i;}
+    if(window.pageYOffset+window.innerHeight>=document.documentElement.scrollHeight-4)cur=ids.length-1;
+    links.forEach(function(a,k){a.classList.toggle('done',k<cur);a.classList.toggle('cur',k===cur);});
+    var max=document.documentElement.scrollHeight-window.innerHeight,p=max>0?Math.min(1,Math.max(0,window.pageYOffset/max)):0;
+    document.getElementById('rnavFill').style.width=(p*100)+'%';document.getElementById('rnavPct').textContent=Math.round(p*100)+'%';
+    var seen=0;for(i=0;i<ids.length;i++){if(top(ids[i])<window.pageYOffset+window.innerHeight)seen=i+1;}
+    var left=ids.length-seen;document.getElementById('rnavLeft').textContent=left>0?' · '+left+(left===1?' section':' sections')+' to go':' · end of the report';}
+  window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);document.addEventListener('toggle',upd,true);upd();
+})();
+</script>
