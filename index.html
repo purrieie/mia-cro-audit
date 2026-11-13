@@ -382,10 +382,40 @@ ul.pend li b{color:var(--text);font-weight:600}
 <nav class="rnav" aria-label="Report sections"><div class="wrap rnav-in"><div class="rnav-items" id="rnavItems"><a href="#s1"><span>One page</span></a><a href="#s2"><span>Timeline</span></a><a href="#s3"><span>Where it leaks</span></a><a href="#s4"><span>Shoppers</span></a><a href="#s5"><span>This quarter</span></a></div><div class="rnav-meta"><b id="rnavPct">0%</b> read<span id="rnavLeft"></span></div></div><div class="rnav-bar"><i id="rnavFill"></i></div></nav>
 </div>
 
+<style>
+.jy-wrap{margin:26px 0 22px}
+.jy-k{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#B49CFB;margin:0 0 8px}
+.jy-intro{color:var(--muted);font-size:15.5px;margin:0 0 14px;max-width:820px}
+.jy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.jyc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.jyc.main{border-color:#E8776B;box-shadow:0 0 0 1px rgba(232,119,107,.25) inset}
+.jyc.done{opacity:.92}
+.jyn{font-family:var(--mono);font-size:12px;color:#B49CFB}
+.jyt{font-weight:700;font-size:16px;color:var(--text)}
+.jyv{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--text);line-height:1.1}
+.jyv.bad{color:#E8776B}.jyv.ok{color:#4FD18B}
+.jyd{font-size:14px;line-height:1.55;color:var(--muted)}
+.jyd b{color:var(--text);font-weight:600}
+.jys{align-self:flex-start;margin-top:auto;font-family:var(--mono);font-size:11.5px;padding:3px 9px;border-radius:999px;background:rgba(154,152,166,.16);color:var(--muted)}
+.jys.bad{background:rgba(232,119,107,.16);color:#E8776B}.jys.ok{background:rgba(79,209,139,.14);color:#4FD18B}
+.jy-goal{margin-top:14px;border-left:3px solid var(--purple);padding:4px 0 4px 18px;font-size:16px;line-height:1.65;color:var(--text);max-width:900px}
+@media (max-width:760px){.jy{grid-template-columns:1fr}}
+</style>
 <header class="hd"><div class="wrap">
   <p class="eyebrow">Mia by Tanishq &middot; CRO and growth plan &middot; October 2026</p>
   <h1>Shoppers choose the piece. The website <em>loses them at the bag and at payment</em>.</h1>
   <p class="lead">This quarter we work on two things: <b>the cart</b> (bag, checkout and payment) and <b>product page experiments</b>. Below is what costs Mia the most in each, and what we are doing about it. Mia's website data, four weeks to 15 October 2026.</p>
+
+  <div class="jy-wrap">
+    <p class="jy-k">Why this journey</p>
+    <p class="jy-intro">Every online sale passes three steps. We compare Mia's rate at each step with the industry benchmark and work on the step that loses the most shoppers.</p>
+    <div class="jy">
+      <div class="jyc done"><span class="jyn">01</span><div class="jyt">Product page &rarr; Add to bag</div><div class="jyv ok">+24.8%</div><div class="jyd">more visits add to bag on the new product page (1.26% to 1.57%), with conversion up 46.8%, in Mia's A/B test.</div><span class="jys ok">Done: new page live</span></div>
+      <div class="jyc main"><span class="jyn">02</span><div class="jyt">Add to bag &rarr; Checkout</div><div class="jyv bad">16.8%</div><div class="jyd">of bag sessions start checkout, against a <b>40% benchmark</b>. Counted by shoppers it is 18.4%: of 16,649 who opened the bag, 3,061 started checkout.</div><span class="jys bad">Biggest gap: this quarter</span></div>
+      <div class="jyc"><span class="jyn">03</span><div class="jyt">Checkout &rarr; Purchase</div><div class="jyv">25.4%</div><div class="jyd">of checkout sessions end in an order, above the <b>14% benchmark</b>. The loss here sits at payment: 51.7% of those who reach it don't pay.</div><span class="jys">Next, fixed alongside</span></div>
+    </div>
+    <div class="jy-goal"><b>Goal this quarter:</b> move add to bag &rarr; checkout towards the 40% benchmark (16.8% by sessions, 18.4% by shoppers today). It is the step that loses the most shoppers, and each 1-point rise in the shopper rate is worth about &#8377;71 L a year. <b>That is why this is the most important journey to fix, and we fix it first.</b></div>
+  </div>
   <div class="pagrid">
     <div class="pa"><div class="pap"><i class="pat">Cart</i><b class="r">64%</b><span>of logged-out shoppers never get past "Login to Proceed" in the bag</span><a class="ref" href="https://claude.ai/artifact/KgvtUJWLeaXUtJN4DR4LsP#r1" target="_blank" rel="noopener">R1</a></div><div class="paa"><em>What we are doing</em>Guest checkout with just a mobile number; the OTP only confirms the order</div></div>
     <div class="pa"><div class="pap"><i class="pat">Cart</i><b class="r">3,477</b><span>shoppers had MIA500 rejected in the bag, against 1,089 accepted; the bag also credits it with ₹11,287 of savings</span><a class="ref" href="https://claude.ai/artifact/KgvtUJWLeaXUtJN4DR4LsP#r5" target="_blank" rel="noopener">R5</a><a class="ref" href="https://claude.ai/artifact/KgvtUJWLeaXUtJN4DR4LsP#r6" target="_blank" rel="noopener">R6</a></div><div class="paa"><em>What we are doing</em>Show only coupons each shopper can use, say why one is rejected, and name each saving correctly</div></div>
