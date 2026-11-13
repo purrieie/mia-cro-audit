@@ -865,3 +865,75 @@ ul.pend li b{color:var(--text);font-weight:600}
   window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);document.addEventListener('toggle',upd,true);upd();
 })();
 </script>
+<style>
+.dz-cell{white-space:nowrap;vertical-align:top}
+.dz{display:flex;flex-direction:column;gap:6px}
+.dz label{display:flex;align-items:center;gap:6px;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;color:#B5B3C0;cursor:pointer;user-select:none}
+.dz input{width:16px;height:16px;accent-color:#8B6BF7;cursor:pointer;margin:0}
+.dz label.on-q{color:#4FD18B}.dz label.on-l{color:#E8A23D}
+tr.dz-q td.on{color:#4FD18B}
+.dz-bar{position:fixed;right:16px;bottom:16px;z-index:50;display:flex;gap:10px;align-items:center;background:#17161D;border:1px solid #4B3A8C;border-radius:12px;padding:10px 12px;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;color:#F2F1F5;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.dz-bar b{color:#4FD18B;font-weight:500}.dz-bar i{color:#E8A23D;font-style:normal}
+.dz-bar button{background:#8B6BF7;color:#0A0A0C;border:0;border-radius:8px;padding:7px 10px;font:inherit;font-weight:500;cursor:pointer}
+.dz-bar button.ghost{background:transparent;color:#B5B3C0;border:1px solid #2A2833}
+@media print{.dz-bar{display:none}}
+@media (max-width:700px){.dz-bar{left:16px;right:16px;justify-content:space-between;flex-wrap:wrap}}
+</style>
+<script>
+(function(){
+  var KEY='mia-decisions-v1', store={};
+  try{ store=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ store={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+  var h2s=[].slice.call(document.querySelectorAll('h2')), h4s=[].slice.call(document.querySelectorAll('h4.grp'));
+  function before(list, el){ var r=null; list.forEach(function(x){ if(x.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) r=x; }); return r; }
+  var items=[];
+  [].slice.call(document.querySelectorAll('table.otab')).forEach(function(t){
+    var rows=[].slice.call(t.querySelectorAll('tbody tr')).filter(function(r){ return r.querySelector('td.on'); });
+    if(!rows.length) return;
+    var h2=(before(h2s,t)||{}).textContent||'', h4=(before(h4s,t)||{}).textContent||'';
+    var pre='', grp='';
+    if(/Edge 1/.test(h2)){pre='G';grp='Gold rate and coins';}
+    else if(/Edge 2/.test(h2)){pre='D';grp='Diamonds in store';}
+    else if(/Edge 3/.test(h2)){pre='P';grp='Purchase plan online';}
+    else if(/experiment/i.test(h4)){pre='E';grp='Product page experiments';}
+    else {pre='';grp='Cart fixes';}
+    var hr=t.querySelector('thead tr'); if(hr){ var th=document.createElement('th'); th.textContent='Decide'; hr.appendChild(th); }
+    rows.forEach(function(r){
+      var num=(r.querySelector('td.on').textContent||'').trim(), code=pre+num;
+      var b=r.querySelector('td.ot b'); var name=b?b.textContent.trim():code;
+      var id=code, td=document.createElement('td'); td.className='dz-cell';
+      var box=document.createElement('div'); box.className='dz';
+      function mk(val,label,cls){ var l=document.createElement('label'); var c=document.createElement('input'); c.type='checkbox'; c.setAttribute('aria-label',name+': '+label);
+        c.checked=store[id]===val; if(c.checked) l.classList.add(cls);
+        c.addEventListener('change',function(){ store[id]=c.checked?val:''; if(!store[id]) delete store[id]; save(); paint(); });
+        l.appendChild(c); l.appendChild(document.createTextNode(label)); return l; }
+      box.appendChild(mk('q','This quarter','on-q')); box.appendChild(mk('l','Later','on-l'));
+      td.appendChild(box); r.appendChild(td);
+      items.push({id:id,code:code,name:name,grp:grp,row:r,box:box});
+    });
+  });
+  var bar=document.createElement('div'); bar.className='dz-bar';
+  var cnt=document.createElement('span'); var cp=document.createElement('button'); cp.textContent='Copy decisions';
+  var clr=document.createElement('button'); clr.className='ghost'; clr.textContent='Clear';
+  bar.appendChild(cnt); bar.appendChild(cp); bar.appendChild(clr); document.body.appendChild(bar);
+  function paint(){
+    var q=0,l=0;
+    items.forEach(function(it){ var v=store[it.id]||''; var ls=it.box.querySelectorAll('label'), cs=it.box.querySelectorAll('input');
+      cs[0].checked=v==='q'; cs[1].checked=v==='l'; ls[0].classList.toggle('on-q',v==='q'); ls[1].classList.toggle('on-l',v==='l');
+      it.row.classList.toggle('dz-q',v==='q'); if(v==='q')q++; if(v==='l')l++; });
+    cnt.innerHTML='<b>'+q+' this quarter</b> · <i>'+l+' later</i> · '+(items.length-q-l)+' open';
+  }
+  cp.addEventListener('click',function(){
+    var lines=['Mia x Troopod: decisions'],groups={};
+    items.forEach(function(it){ (groups[it.grp]=groups[it.grp]||[]).push(it); });
+    Object.keys(groups).forEach(function(g){ lines.push('',g); groups[g].forEach(function(it){ var v=store[it.id]; lines.push('- '+it.code+' '+it.name+': '+(v==='q'?'This quarter':v==='l'?'Later':'Not decided')); }); });
+    var txt=lines.join('\n');
+    function done(){ cp.textContent='Copied'; setTimeout(function(){cp.textContent='Copy decisions';},1500); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,function(){fb(txt);done();}); } else { fb(txt); done(); }
+  });
+  function fb(t){ var a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand('copy');}catch(e){} a.remove(); }
+  var armed=null;
+  clr.addEventListener('click',function(){ if(!armed){ clr.textContent='Sure?'; armed=setTimeout(function(){clr.textContent='Clear';armed=null;},2500); return; } clearTimeout(armed); armed=null; clr.textContent='Clear'; store={}; save(); paint(); });
+  paint();
+})();
+</script>
